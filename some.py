@@ -1,6 +1,6 @@
 low=0
 high=100
-print 'Please think of a number between 0 and 100!'
+print 'Please think of a number between 0 and 1100!'
 s = "a"
 while s != "c":
   guess=(low+high)/2
