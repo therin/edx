@@ -1,0 +1,52 @@
+2013-05-11 21:32:02+1200 [scrapy] INFO: Scrapy 0.16.4 started (bot: horrible)
+2013-05-11 21:32:03+1200 [horrible] INFO: Spider opened
+2013-05-11 21:32:03+1200 [horrible] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2013-05-11 21:32:04+1200 [horrible] ERROR: Spider error processing <GET http://www.nyaa.eu/?page=search&cats=0_0&filter=0&term=books>
+	Traceback (most recent call last):
+	  File "C:\Program Files (x86)\Python\lib\site-packages\twisted-13.0.0-py2.7-win32.egg\twisted\internet\base.py", line 1201, in mainLoop
+	    self.runUntilCurrent()
+	  File "C:\Program Files (x86)\Python\lib\site-packages\twisted-13.0.0-py2.7-win32.egg\twisted\internet\base.py", line 824, in runUntilCurrent
+	    call.func(*call.args, **call.kw)
+	  File "C:\Program Files (x86)\Python\lib\site-packages\twisted-13.0.0-py2.7-win32.egg\twisted\internet\defer.py", line 380, in callback
+	    self._startRunCallbacks(result)
+	  File "C:\Program Files (x86)\Python\lib\site-packages\twisted-13.0.0-py2.7-win32.egg\twisted\internet\defer.py", line 488, in _startRunCallbacks
+	    self._runCallbacks()
+	--- <exception caught here> ---
+	  File "C:\Program Files (x86)\Python\lib\site-packages\twisted-13.0.0-py2.7-win32.egg\twisted\internet\defer.py", line 575, in _runCallbacks
+	    current.result = callback(current.result, *args, **kw)
+	  File "D:\Dropbox\SUBLIME\Python\horrible\horrible\spiders\horrible_spyder_test.py", line 39, in parse
+	    for s in self.keywords:
+	exceptions.AttributeError: 'horribleSpider' object has no attribute 'keywords'
+	
+2013-05-11 21:32:04+1200 [horrible] INFO: Closing spider (finished)
+2013-05-11 21:32:04+1200 [horrible] INFO: Dumping Scrapy stats:
+	{'downloader/request_bytes': 242,
+	 'downloader/request_count': 1,
+	 'downloader/request_method_count/GET': 1,
+	 'downloader/response_bytes': 3724,
+	 'downloader/response_count': 1,
+	 'downloader/response_status_count/200': 1,
+	 'finish_reason': 'finished',
+	 'finish_time': datetime.datetime(2013, 5, 11, 9, 32, 4, 135000),
+	 'log_count/ERROR': 1,
+	 'log_count/INFO': 4,
+	 'response_received_count': 1,
+	 'scheduler/dequeued': 1,
+	 'scheduler/dequeued/memory': 1,
+	 'scheduler/enqueued': 1,
+	 'scheduler/enqueued/memory': 1,
+	 'spider_exceptions/AttributeError': 1,
+	 'start_time': datetime.datetime(2013, 5, 11, 9, 32, 3, 488000)}
+2013-05-11 21:32:04+1200 [horrible] INFO: Spider closed (finished)
+2013-05-11 22:02:51+1200 [scrapy] INFO: Scrapy 0.16.4 started (bot: horrible)
+2013-05-11 22:03:10+1200 [scrapy] INFO: Scrapy 0.16.4 started (bot: horrible)
+2013-05-11 22:03:18+1200 [scrapy] INFO: Scrapy 0.16.4 started (bot: horrible)
+2013-05-11 22:03:19+1200 [horrible] INFO: Spider opened
+2013-05-11 22:03:19+1200 [horrible] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2013-05-11 22:03:19+1200 [horrible] INFO: Closing spider (finished)
+2013-05-11 22:03:19+1200 [horrible] INFO: Dumping Scrapy stats:
+	{'finish_reason': 'finished',
+	 'finish_time': datetime.datetime(2013, 5, 11, 10, 3, 19, 927000),
+	 'log_count/INFO': 4,
+	 'start_time': datetime.datetime(2013, 5, 11, 10, 3, 19, 925000)}
+2013-05-11 22:03:19+1200 [horrible] INFO: Spider closed (finished)
