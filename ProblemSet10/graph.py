@@ -22,6 +22,8 @@ class Node(object):
         # Think: Why would we want to do this?
         return self.name.__hash__()
 
+ 
+
 class Edge(object):
     def __init__(self, src, dest):
         self.src = src
@@ -38,16 +40,10 @@ class Digraph(object):
     A directed graph
     """
     def __init__(self):
-        # A Python Set is basically a list that doesn't allow duplicates.
-        # Entries into a set must be hashable (where have we seen this before?)
-        # Because it is backed by a hashtable, lookups are O(1) as opposed to the O(n) of a list (nifty!)
-        # See http://docs.python.org/2/library/stdtypes.html#set-types-set-frozenset
         self.nodes = set([])
         self.edges = {}
     def addNode(self, node):
         if node in self.nodes:
-            # Even though self.nodes is a Set, we want to do this to make sure we
-            # don't add a duplicate entry for the same node in the self.edges list.
             raise ValueError('Duplicate node')
         else:
             self.nodes.add(node)
@@ -71,50 +67,47 @@ class Digraph(object):
 
 
 class WeightedDigraph(Digraph):
-    """
-    A weighted directed graph
-    """
     def __init__(self):
-        # A Python Set is basically a list that doesn't allow duplicates.
-        # Entries into a set must be hashable (where have we seen this before?)
-        # Because it is backed by a hashtable, lookups are O(1) as opposed to the O(n) of a list (nifty!)
-        # See http://docs.python.org/2/library/stdtypes.html#set-types-set-frozenset
         Digraph.__init__(self)
         self.edges = {}
         self.children = {}
-        self.weights = {}
     def addNode(self, node):
         if node in self.nodes:
             raise ValueError('Duplicate node')
         else:
             self.nodes.add(node)
-            #self.edges[node] = []
+            self.children[node] = []
+            self.edges[node] = []
     def __str__(self):
         res = ''
-        for k,v in self.edges.items():
-            for self.edges[k]:
-                res = '{0}{1}->{2}\n'.format( k[0],k[1],v )
+        for k in self.edges:
+            for d,f in self.edges[k]:
+                tup = (float(f[0]),float(f[1]))
+                res = '{0}{1}->{2} {3}\n'.format(res, k, d, tup)
         return res[:-1]
 
         '''
         res = ''
-        for k in sorted(self.edges.keys()):
-            #print k.getTotalDistance()
-
-            for d in self.edges[k]:
-                res = '{0}{1}->{2}\n'.format(res, k, d)
+        for k in self.edges:
+        #for k in sorted(self.edges.iterkeys()):
+        #for k in sorted(self.edges, key=self.edges.get):
+            tup = (float(self.edges[k][0]),float(self.edges[k][1]))
+            res = '{0}{1}->{2} {3}\n'.format(res, k[0],k[1], tup)
         return res[:-1]
         '''
+
     def addEdge(self, edge):
         src = edge.getSource()
         dest = edge.getDestination()
         weights = edge.getWeights()
         if not(src in self.nodes and dest in self.nodes):
             raise ValueError('Node not in graph')
-        #self.children[src].append(dest)
-        self.edges[(src, dest)] = weights
-    #def childrenOf(self, node):
-        #return self.children[node]
+        self.children[src].append(dest)
+        some = [dest, weights]
+        self.edges[src].append(some)
+        #self.edges[(src, dest)] = weights
+    def childrenOf(self, node):
+        return self.children[node]
 
 class WeightedEdge(Edge):
     """
@@ -122,6 +115,7 @@ class WeightedEdge(Edge):
     """
     def __init__(self,src, dest, distance, opendistance):
         Edge.__init__(self, src, dest)
+        self.weights = (distance, opendistance)
         self.distance = distance
         self.opendistance = opendistance
     def getTotalDistance(self):
@@ -129,33 +123,34 @@ class WeightedEdge(Edge):
     def getOutdoorDistance(self):
         return self.opendistance
     def getWeights(self):
-        tup = (self.distance,self.opendistance)
-        return tup
+        return self.weights
     def __str__(self):
         return '{0}->{1} ({2}, {3})'.format(self.src, self.dest, self.distance, self.opendistance)
 
-
-
-
+'''
+nj = Node('j')
+nk = Node('k')
+nm = Node('m')
+ng = Node('g')
 g = WeightedDigraph()
-na = Node('a')
-nb = Node('b')
-nc = Node('c')
-g.addNode(na)
-g.addNode(nb)
-g.addNode(nc)
-e1 = WeightedEdge(na, nb, 15, 10)
-print e1
-print e1.getTotalDistance()
-print e1.getOutdoorDistance()
-e2 = WeightedEdge(na, nc, 14, 6)
-print e1.getTotalDistance()
-print e2.getOutdoorDistance()
-e3 = WeightedEdge(nb, nc, 3, 1)
-print e2
-print e3
-#print g.childrenOf(nb)
-g.addEdge(e1)
-g.addEdge(e2)
-g.addEdge(e3)
+g.addNode(nj)
+g.addNode(nk)
+g.addNode(nm)
+g.addNode(ng)
+randomEdge = WeightedEdge(nm, nj, 57, 45)
+g.addEdge(randomEdge)
+randomEdge = WeightedEdge(nk, ng, 24, 14)
+g.addEdge(randomEdge)
+randomEdge = WeightedEdge(ng, nj, 86, 24)
+g.addEdge(randomEdge)
+randomEdge = WeightedEdge(nj, nm, 77, 48)
+g.addEdge(randomEdge)
+randomEdge = WeightedEdge(nk, nm, 15, 8)
+g.addEdge(randomEdge)
+randomEdge = WeightedEdge(ng, nm, 67, 19)
+g.addEdge(randomEdge)
+randomEdge = WeightedEdge(ng, nm, 97, 24)
+g.addEdge(randomEdge)
+
 print g
+'''

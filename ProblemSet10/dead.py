@@ -69,14 +69,22 @@ class WeightedDigraph(Digraph):
         Digraph.__init__(self)
         self.edges = {}
         self.children = {}
-        self.weights = {}
     def addNode(self, node):
         if node in self.nodes:
             raise ValueError('Duplicate node')
         else:
             self.nodes.add(node)
             self.children[node] = []
+            self.edges[node] = []
     def __str__(self):
+        res = ''
+        for k in self.edges:
+            for d,f in self.edges[k]:
+                tup = (float(f[0]),float(f[1]))
+                res = '{0}{1}->{2} {3}\n'.format(res, k, d, tup)
+        return res[:-1]
+
+        '''
         res = ''
         for k in self.edges:
         #for k in sorted(self.edges.iterkeys()):
@@ -84,6 +92,7 @@ class WeightedDigraph(Digraph):
             tup = (float(self.edges[k][0]),float(self.edges[k][1]))
             res = '{0}{1}->{2} {3}\n'.format(res, k[0],k[1], tup)
         return res[:-1]
+        '''
 
     def addEdge(self, edge):
         src = edge.getSource()
@@ -92,7 +101,9 @@ class WeightedDigraph(Digraph):
         if not(src in self.nodes and dest in self.nodes):
             raise ValueError('Node not in graph')
         self.children[src].append(dest)
-        self.edges[(src, dest)] = weights
+        some = (dest, weights)
+        self.edges[src].append(some)
+        #self.edges[(src, dest)] = weights
     def childrenOf(self, node):
         return self.children[node]
 
@@ -102,6 +113,7 @@ class WeightedEdge(Edge):
     """
     def __init__(self,src, dest, distance, opendistance):
         Edge.__init__(self, src, dest)
+        self.weights = (distance, opendistance)
         self.distance = distance
         self.opendistance = opendistance
     def getTotalDistance(self):
@@ -109,46 +121,18 @@ class WeightedEdge(Edge):
     def getOutdoorDistance(self):
         return self.opendistance
     def getWeights(self):
-        tup = (self.distance,self.opendistance)
-        return tup
+        return self.weights
     def __str__(self):
         return '{0}->{1} ({2}, {3})'.format(self.src, self.dest, self.distance, self.opendistance)
 
 
-nj = Node('j')
-nk = Node('k')
-nm = Node('m')
-ng = Node('g')
-g = WeightedDigraph()
-g.addNode(nj)
-g.addNode(nk)
-g.addNode(nm)
-g.addNode(ng)
-randomEdge = WeightedEdge(ng, nm, 81, 24)
-g.addEdge(randomEdge)
-randomEdge = WeightedEdge(ng, nm, 62, 5)
-g.addEdge(randomEdge)
-randomEdge = WeightedEdge(ng, nk, 11, 8)
-g.addEdge(randomEdge)
-randomEdge = WeightedEdge(nj, ng, 91, 59)
-g.addEdge(randomEdge)
-randomEdge = WeightedEdge(ng, nj, 88, 81)
-g.addEdge(randomEdge)
-randomEdge = WeightedEdge(nk, nj, 61, 17)
-g.addEdge(randomEdge)
-randomEdge = WeightedEdge(nk, nm, 26, 11)
-g.addEdge(randomEdge)
-randomEdge = WeightedEdge(nj, nk, 96, 8)
-g.addEdge(randomEdge)
-print g
-
-'''
-k->j (61.0, 17.0)
-k->m (26.0, 11.0)
-j->g (91.0, 59.0)
-j->k (96.0, 8.0)
-g->m (81.0, 24.0)
-g->m (62.0, 5.0)
-g->k (11.0, 8.0)
-g->j (88.0, 81.0)
-'''
+na = Node('a')
+nb = Node('b')
+nc = Node('c')
+e1 = WeightedEdge(na, nb, 15, 10)
+print isinstance(e1, Edge)
+print isinstance(e1, WeightedEdge)
+print e1.getSource()
+print e1.getDestination()
+print e1.getTotalDistance()
+print e1.getOutdoorDistance()
