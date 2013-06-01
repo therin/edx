@@ -17,18 +17,9 @@ from graph import *
 # thoughts before you tackle a big design problem!
 #
 
-
-def printPath(path):
-    # a path is a list of nodes
-    result = ''
-    for i in range(len(path)):
-        if i == len(path) - 1:
-            result = result + str(path[i])
-        else:
-            result = result + str(path[i]) + '->'
-    return result
-
 def load_map(mapFilename):
+
+
 
     print "Loading map from file..."
     result = WeightedDigraph()
@@ -50,8 +41,55 @@ def load_map(mapFilename):
             result.addEdge(edge)
     return result
        
+    """ 
+    Parses the map file and constructs a directed graph
+
+    Parameters: 
+        mapFilename : name of the map file
+
+    Assumes:
+        Each entry in the map file consists of the following four positive 
+        integers, separated by a blank space:
+            From To TotalDistance DistanceOutdoors
+        e.g.
+            32 76 54 23
+        This entry would become an edge from 32 to 76.
+
+    Returns:
+        a directed graph representing the map
+    """
+    '''
+    # TODO
+    g = WeightedDigraph()
+    inFile = open(mapFilename, 'r', 0)
+   
+    # Generate list of map entries
+    mapList = []
+    for line in inFile
+        mapList.append(line.split())
+
+    nodes = []
+    for line in mapList:
+        nodes.append(line[0])
+    for node in nodes:
+        g.addNode(node)  
 
 
+    # Generate edges
+    edges = []
+    for entry in mapList:
+        singleEdge = WeightedEdge(entry[0], entry[1], int(entry[2]), int(entry[3]))
+        edges.append(singleEdge)
+    for edge in edges:
+        g.addEdge(edge)
+ 
+    # Print report    
+    print "  ", len(nodes), "nodes loaded."
+    print "  ", len(edges), "edges loaded."
+ 
+    inFile.close()
+    return g      
+'''
 #
 # Problem 3: Finding the Shortest Path using Brute Force Search
 #
@@ -61,154 +99,61 @@ def load_map(mapFilename):
 
 def bruteForceSearch(digraph, start, end, maxTotalDist, maxDistOutdoors):    
     """
-   Finds the shortest path from start to end using brute-force approach.
-   The total distance travelled on the path must not exceed maxTotalDist, and
-   the distance spent outdoor on this path must not exceed maxDisOutdoors.
- 
-   Parameters:
-       digraph: instance of class Digraph or its subclass
-       start, end: start & end building numbers (strings)
-       maxTotalDist : maximum total distance on a path (integer)
-       maxDistOutdoors: maximum distance spent outdoors on a path (integer)
- 
-   Assumes:
-       start and end are numbers for existing buildings in graph
- 
-   Returns:
-       The shortest-path from start to end, represented by
-       a list of building numbers (in strings), [n_1, n_2, ..., n_k],
-       where there exists an edge from n_i to n_(i+1) in digraph,
-       for all 1 <= i < k.
- 
-       If there exists no path that satisfies maxTotalDist and
-       maxDistOutdoors constraints, then raises a ValueError.
-   """
-   
-    # Brute Force Outputs
-    BFSResult = {}
-   
-    # Helper function to calculate Total Distance in a path
-    def Dist(path):
-        result = 0
-        if path == None:
-            return result
-        if len(path) == 0:
-            return result
-        for i in range(len(path)-1):
-            src = path[i]
-            dest = path[i+1]
-            for item in digraph.edges[src]:
-                if item[0] == dest:
-                    item = str(item[1][0])
-                    result += float(item)
-        return result    
-   
-    # Helper function to calculate Total Outdoor Distance in a path
-    def Out(path):
-        result = 0
-        if path == None:
-            return result
-        if len(path) == 0:
-            return result
-        for i in range(len(path)-1):
-            src = path[i]
-            dest = path[i+1]
-            for item in digraph.edges[src]:
-                if item[0] == dest:
-                    item = str(item[1][1])
-                    result += float(item)
-        return result    
-    # Helper function using DFS method
-    def find_shortest_path(graph, start, end, maxD, maxO, path = [], result = None):
-        start = Node(start)
-        end = Node(end)
-        path = path + [start]
-        if start == end:
-            return path
-        shortest = None
-        for node in graph.childrenOf(start):
-            if node not in path:
-                newpath = find_shortest_path(graph,node,end,maxD, maxO, path)
-                if newpath:
-                    if not shortest or len(newpath) < len(shortest) and Dist(newpath) <= maxD and Out(newpath) <= maxO:
-                        distResult = Dist(newpath)
-                        outResult = Out(newpath)
-                        BFSResult[distResult,outResult] = newpath
-                        shortest = newpath
+    Finds the shortest path from start to end using brute-force approach.
+    The total distance travelled on the path must not exceed maxTotalDist, and
+    the distance spent outdoor on this path must not exceed maxDistOutdoors.
 
-        return None
+    Parameters: 
+        digraph: instance of class Digraph or its subclass
+        start, end: start & end building numbers (strings)
+        maxTotalDist : maximum total distance on a path (integer)
+        maxDistOutdoors: maximum distance spent outdoors on a path (integer)
 
-    find_shortest_path(digraph, start, end, maxTotalDist, maxDistOutdoors)
-    good = False
-    BFSResult2 = {}
-    for key in BFSResult.keys():
-        #print key, maxTotalDist, maxTotalDist
-        if key[0] <= maxTotalDist and key[1] <= maxDistOutdoors:
-            pups = key[0]
-            BFSResult2[pups] = BFSResult[key]
-            good = True 
-            if len(BFSResult) == 0:
-                raise ValueError
-    if good == False:
-        raise ValueError
-    end = []
-    for shit in BFSResult2[min(BFSResult2)]:
-        shit = str(shit)
-        end.append(shit)
-    return end
+    Assumes:
+        start and end are numbers for existing buildings in graph
 
+    Returns:
+        The shortest-path from start to end, represented by 
+        a list of building numbers (in strings), [n_1, n_2, ..., n_k], 
+        where there exists an edge from n_i to n_(i+1) in digraph, 
+        for all 1 <= i < k.
+
+        If there exists no path that satisfies maxTotalDist and
+        maxDistOutdoors constraints, then raises a ValueError.
+    """
+    #TODO
+    pass
 
 #
 # Problem 4: Finding the Shorest Path using Optimized Search Method
-#"""
- 
-
+#
 def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
     """
     Finds the shortest path from start to end using directed depth-first.
     search approach. The total distance travelled on the path must not
     exceed maxTotalDist, and the distance spent outdoor on this path must
-    not exceed maxDisOutdoors.
- 
-    Parameters:
+	not exceed maxDistOutdoors.
+
+    Parameters: 
         digraph: instance of class Digraph or its subclass
         start, end: start & end building numbers (strings)
         maxTotalDist : maximum total distance on a path (integer)
         maxDistOutdoors: maximum distance spent outdoors on a path (integer)
- 
+
     Assumes:
         start and end are numbers for existing buildings in graph
- 
+
     Returns:
-        The shortest-path from start to end, represented by
-        a list of building numbers (in strings), [n_1, n_2, ..., n_k],
-        where there exists an edge from n_i to n_(i+1) in digraph,
+        The shortest-path from start to end, represented by 
+        a list of building numbers (in strings), [n_1, n_2, ..., n_k], 
+        where there exists an edge from n_i to n_(i+1) in digraph, 
         for all 1 <= i < k.
- 
+
         If there exists no path that satisfies maxTotalDist and
         maxDistOutdoors constraints, then raises a ValueError.
     """
-    def _gen_paths(original_path, edges):
-        yield original_path
-        for edge in edges:
-            if not is_node_visited(edge.getDestination(), original_path):
-                yield original_path + [edge]
- 
-    stack = [[edge] for edge in digraph.childrenOf(Node(start))]
- 
-    while stack:
-        path = stack.pop(-1)
-        next_edges = digraph.childrenOf(path[-1].getDestination())
- 
-        for new_path in _gen_paths(path, next_edges):
-            if (calc_distance_outdoors(new_path) <= maxDistOutdoors and
-                    calc_total_distance(new_path) <= maxTotalDist):
-                if new_path[-1].getDestination().getName() == end:
-                    return get_node_list(new_path)
-                elif new_path is not path:
-                    stack.append(new_path)
- 
-    raise ValueError()
+    #TODO
+    pass
 
 # Uncomment below when ready to test
 #### NOTE! These tests may take a few minutes to run!! ####
@@ -335,41 +280,26 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
 #     print "Expected: No such path! Should throw a value error."
 #     print "Did brute force search raise an error?", bruteRaisedErr
 #     print "Did DFS search raise an error?", dfsRaisedErr
+
+mitMap = load_map("mit_map.txt")
+nodes = mitMap.nodes
+edges = mitMap.edges
+
+asfa = sdf
+
+
+prin edgesb
+
+print mitMap
+
 '''
-map1 = load_map("map1.txt")
-print bruteForceSearch(map1, "1", "3", 100, 100)
+Expected to find edge [2, (75.0, 60.0)] for node 1
+Expected to find edge [4, (80.0, 65.0)] for node 1
+Expected to find edge [3, (36.0, 0.0)] for node 1
+Expected to find edge [5, (32.0, 0.0)] for node 1
 
-map2 = load_map("map2.txt")
-print bruteForceSearch(map2, "1", "3", 100, 100)
-
-map3a = load_map("map3a.txt")
-print bruteForceSearch(map3a, "1", "3", 100, 100)
-
-map5 = load_map("map5.txt")
-#print bruteForceSearch(map5, "1", "3", 100, 100)
-#['1', '2', '4', '3']
-#print bruteForceSearch(map5, "1", "5", 100, 100)
-#['1', '2', '3']
-#['1', '2', '4', '3']
-print bruteForceSearch(map5, "1", "3", 17, 8)
-#['1', '2', '4', '3']
-print bruteForceSearch(map5, "1", "5", 23, 11)
-#['1', '2', '4', '3', '5']
-print bruteForceSearch(map5, "4", "5", 21, 11)
-#['4', '3', '5']
-print bruteForceSearch(map5, "5", "1", 100, 100)
-#ValueError successfully raised
-print bruteForceSearch(map5, "4", "5", 8, 2)
-#ValueError successfully raised
+Did not expect to find edge (2, (75.0, 60.0)) for node 1
+Did not expect to find edge (4, (80.0, 65.0)) for node 1
+Did not expect to find edge (3, (36.0, 0.0)) for node 1
+Did not expect to find edge (5, (32.0, 0.0)) for node 1
 '''
-map5 = load_map("map5.txt")
-directedDFS(map5, "1", "3", 17, 8)
-#['1', '2', '4', '3']
-directedDFS(map5, "1", "5", 23, 11)
-#['1', '2', '4', '3', '5']
-directedDFS(map5, "4", "5", 21, 11)
-#['4', '3', '5']
-directedDFS(map5, "5", "1", 100, 100)
-#ValueError successfully raised
-directedDFS(map5, "4", "5", 8, 2)
-#ValueError successfully raised
